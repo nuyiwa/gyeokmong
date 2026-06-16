@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>격몽요결 · 교사 대시보드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<style>
+:root{--ink:#26241F;--hanji:#FAF6EC;--hanji-deep:#F1EADA;--jjok:#1F4E5F;--jjok-soft:#E3EDF0;--dancheong:#B5443C;--dan-soft:#F6E6E4;--songhwa:#C9A227;--line:#D9CFBA;--muted:#7A7263}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--hanji);color:var(--ink);min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto;padding:30px 20px 80px}
+/* 로그인 */
+.login-screen{position:fixed;inset:0;background:var(--hanji);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:40px 34px;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(38,36,31,.1)}
+.login-card .seal{width:60px;height:60px;border:2.5px solid var(--dancheong);color:var(--dancheong);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif KR',serif;font-weight:900;font-size:18px;line-height:1.2;text-align:center;transform:rotate(-3deg);border-radius:4px;margin:0 auto 18px}
+.login-card h1{font-family:'Noto Serif KR',serif;font-weight:900;font-size:22px}
+.login-card .sub{font-size:13px;color:var(--muted);margin:6px 0 24px}
+.login-card input{width:100%;padding:12px 14px;font-size:16px;font-family:inherit;text-align:center;border:1.5px solid var(--line);border-radius:8px;background:var(--hanji);margin-bottom:12px}
+.login-card input:focus{outline:none;border-color:var(--jjok)}
+.login-card button{width:100%;padding:13px;font-size:16px;font-weight:700;background:var(--jjok);color:#fff;border:none;border-radius:8px;cursor:pointer}
+.login-card .msg{font-size:13px;color:var(--dancheong);font-weight:700;min-height:18px;margin-top:8px}
+/* 헤더 */
+header{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid var(--ink);padding-bottom:14px;margin-bottom:8px;flex-wrap:wrap;gap:10px}
+header h1{font-family:'Noto Serif KR',serif;font-weight:900;font-size:clamp(22px,4vw,30px)}
+header .sub{font-size:13px;color:var(--muted);letter-spacing:.2em;margin-top:3px}
+.mode-pill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px}
+.mode-pill.server{background:var(--jjok-soft);color:var(--jjok)}
+.mode-pill.local{background:var(--dan-soft);color:var(--dancheong)}
+/* 컨트롤 */
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0 24px}
+.controls select,.controls button{font-family:inherit;font-size:14px;padding:9px 14px;border:1.5px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}
+.controls .refresh{background:var(--jjok);color:#fff;border-color:var(--jjok);font-weight:700}
+.controls .csv{background:var(--songhwa);color:#fff;border-color:var(--songhwa);font-weight:700}
+.controls .spacer{flex:1}
+/* 요약 카드 */
+.summary-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px}
+.sum-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}
+.sum-card .num{font-size:28px;font-weight:900;color:var(--jjok);font-family:'Noto Serif KR',serif}
+.sum-card .lbl{font-size:12px;color:var(--muted);font-weight:700;margin-top:2px}
+/* 표 */
+.table-wrap{background:#fff;border:1px solid var(--line);border-radius:10px;overflow-x:auto;margin-bottom:24px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+th{background:var(--hanji-deep);font-weight:700;font-size:12px;letter-spacing:.05em;position:sticky;top:0}
+td.center,th.center{text-align:center}
+.prog-mini{display:inline-block;width:60px;height:6px;background:var(--hanji-deep);border-radius:999px;overflow:hidden;vertical-align:middle}
+.prog-mini i{display:block;height:100%;background:var(--jjok);border-radius:999px}
+.score-badge{font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--dan-soft);color:var(--dancheong)}
+.team-tag{font-size:11px;font-weight:700;color:var(--muted)}
+.view-btn{font-size:12px;font-weight:700;color:var(--jjok);background:none;border:1.5px solid var(--jjok);border-radius:999px;padding:4px 10px;cursor:pointer}
+.empty{padding:40px;text-align:center;color:var(--muted);font-size:14px}
+/* 상세 모달 */
+.modal-bg{position:fixed;inset:0;background:rgba(38,36,31,.5);z-index:40;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:12px;padding:28px;max-width:680px;width:100%;max-height:86vh;overflow-y:auto}
+.modal h2{font-family:'Noto Serif KR',serif;font-weight:900;font-size:20px;margin-bottom:4px}
+.modal .msub{font-size:13px;color:var(--muted);margin-bottom:18px}
+.modal .rnd{border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:12px}
+.modal .rnd .rh{font-family:'Noto Serif KR',serif;font-weight:700;font-size:15px;margin-bottom:8px;color:var(--jjok)}
+.modal .rnd .fld{font-size:13px;margin-bottom:5px;line-height:1.6}
+.modal .rnd .fld b{color:var(--muted);font-weight:700}
+.modal .exam-box{border:2px solid var(--dancheong);border-radius:8px;padding:14px;margin-bottom:12px;background:var(--dan-soft)}
+.modal .exam-box .eh{font-weight:900;color:var(--dancheong);margin-bottom:6px}
+.modal .close{margin-top:8px;width:100%;padding:12px;font-size:15px;font-weight:700;background:var(--ink);color:var(--hanji);border:none;border-radius:8px;cursor:pointer}
+footer{margin-top:40px;border-top:1px solid var(--line);padding-top:14px;font-size:12px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="seal">敎師</div>
+    <h1>교사 대시보드</h1>
+    <div class="sub">擊蒙要訣 · 학생 진도 · 제출 · 채점</div>
+    <input type="password" id="pw" placeholder="관리자 코드 입력">
+    <button id="loginBtn">들어가기</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="display:none">
+  <header>
+    <div>
+      <h1>교사 대시보드</h1>
+      <div class="sub">擊蒙要訣 · 栗谷 李珥</div>
+    </div>
+    <span class="mode-pill" id="modePill"></span>
+  </header>
+
+  <div class="controls">
+    <select id="chapterFilter"><option value="all">전체 장</option></select>
+    <select id="teamFilter"><option value="all">전체 팀</option></select>
+    <button class="refresh" id="refreshBtn">↻ 새로고침</button>
+    <div class="spacer"></div>
+    <button class="csv" id="csvBtn">CSV 내보내기</button>
+  </div>
+
+  <div class="summary-row" id="summaryRow"></div>
+
+  <div class="table-wrap">
+    <table id="mainTable">
+      <thead><tr>
+        <th>학생</th><th>팀</th><th>장</th><th class="center">회차 진도</th>
+        <th class="center">시험</th><th class="center">객관식 점수</th><th class="center">상세</th>
+      </tr></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="empty" id="emptyMsg" style="display:none">아직 제출된 데이터가 없습니다.</div>
+  </div>
+
+  <footer>擊蒙要訣 교사 대시보드 · 데이터는 Firebase(설정 시) 또는 이 기기에 저장됩니다</footer>
+</div>
+
+<div class="modal-bg" id="modalBg"><div class="modal" id="modalContent"></div></div>
+
+<script>
+const CHAPTERS=[
+  {hanja:"立志",korean:"입지장",rounds:8},{hanja:"革舊習",korean:"혁구습장",rounds:6},
+  {hanja:"持身",korean:"지신장",rounds:8},{hanja:"讀書",korean:"독서장",rounds:8},
+  {hanja:"事親",korean:"사친장",rounds:6},{hanja:"喪制",korean:"상제장",rounds:6},
+  {hanja:"祭禮",korean:"제례장",rounds:6},{hanja:"居家",korean:"거가장",rounds:6},
+  {hanja:"接人",korean:"접인장",rounds:6},{hanja:"處世",korean:"처세장",rounds:6}
+];
+let ALL={}; // key -> data
+
+// 로그인
+document.getElementById("loginBtn").addEventListener("click",doLogin);
+document.getElementById("pw").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
+async function doLogin(){
+  const pw=document.getElementById("pw").value;
+  if(pw!==ADMIN_CODE){ document.getElementById("loginMsg").textContent="코드가 올바르지 않습니다"; return; }
+  document.getElementById("loginScreen").style.display="none";
+  document.getElementById("app").style.display="block";
+  await gmykInit();
+  const pill=document.getElementById("modePill");
+  if(gmykIsServerMode()){ pill.textContent="🌐 서버 연결됨 (전체 학생)"; pill.className="mode-pill server"; }
+  else{ pill.textContent="💾 기기 저장 모드 (이 기기만)"; pill.className="mode-pill local"; }
+  // 장 필터 채우기
+  const cf=document.getElementById("chapterFilter");
+  CHAPTERS.forEach((c,i)=>{ const o=document.createElement("option"); o.value=i+1; o.textContent=`제${i+1}장 ${c.hanja} ${c.korean}`; cf.appendChild(o); });
+  await loadAll();
+}
+
+document.getElementById("refreshBtn").addEventListener("click",loadAll);
+document.getElementById("chapterFilter").addEventListener("change",render);
+document.getElementById("teamFilter").addEventListener("change",render);
+document.getElementById("csvBtn").addEventListener("click",exportCSV);
+
+async function loadAll(){
+  ALL=await gmykLoadAll()||{};
+  // 팀 필터 채우기
+  const teams=new Set();
+  Object.values(ALL).forEach(d=>{ if(d&&d._team) teams.add(d._team); });
+  const tf=document.getElementById("teamFilter");
+  tf.innerHTML='<option value="all">전체 팀</option>';
+  [...teams].sort().forEach(t=>{ const o=document.createElement("option"); o.value=t; o.textContent=t; tf.appendChild(o); });
+  render();
+}
+
+function parseKey(key){
+  // gmyk_ch{N}_{name}
+  const m=key.match(/^gmyk_ch(\d+)_(.+)$/);
+  if(!m) return null;
+  return { chapter:parseInt(m[1]), name:m[2].replace(/_/g," ") };
+}
+
+function rowsFromData(){
+  const rows=[];
+  Object.entries(ALL).forEach(([key,d])=>{
+    if(!d) return;
+    const pk=parseKey(key);
+    if(!pk) return;
+    const ch=CHAPTERS[pk.chapter-1];
+    const roundsArr=d.rounds||[];
+    const roundsDone=roundsArr.filter(r=>r&&r.done).length;
+    const exams=d.exams||{};
+    const examEntries=Object.entries(exams).filter(([k,v])=>v&&v.done);
+    const examCount=Math.floor((ch?ch.rounds:6)/4);
+    // 객관식 점수 합산
+    let totC=0,totG=0;
+    examEntries.forEach(([k,v])=>{ if(v.score){ const [c,g]=v.score.split("/").map(Number); totC+=c; totG+=g; } });
+    rows.push({
+      key, name:d._name||pk.name, team:d._team||"-",
+      chapter:pk.chapter, chHanja:ch?ch.hanja:"?", chKorean:ch?ch.korean:"",
+      roundsDone, roundsTotal:ch?ch.rounds:6,
+      examsDone:examEntries.length, examsTotal:examCount,
+      score: totG>0?`${totC}/${totG}`:"-",
+      data:d
+    });
+  });
+  return rows;
+}
+
+function render(){
+  const chF=document.getElementById("chapterFilter").value;
+  const tmF=document.getElementById("teamFilter").value;
+  let rows=rowsFromData();
+  if(chF!=="all") rows=rows.filter(r=>r.chapter===parseInt(chF));
+  if(tmF!=="all") rows=rows.filter(r=>r.team===tmF);
+  rows.sort((a,b)=> (a.team+a.name).localeCompare(b.team+b.name) || a.chapter-b.chapter);
+
+  // 요약
+  const students=new Set(rows.map(r=>r.name));
+  const totalRoundsDone=rows.reduce((s,r)=>s+r.roundsDone,0);
+  const totalExamsDone=rows.reduce((s,r)=>s+r.examsDone,0);
+  document.getElementById("summaryRow").innerHTML=`
+    <div class="sum-card"><div class="num">${students.size}</div><div class="lbl">학생 수</div></div>
+    <div class="sum-card"><div class="num">${rows.length}</div><div class="lbl">학습 중인 장(학생×장)</div></div>
+    <div class="sum-card"><div class="num">${totalRoundsDone}</div><div class="lbl">완료 회차 합계</div></div>
+    <div class="sum-card"><div class="num">${totalExamsDone}</div><div class="lbl">완료 시험 합계</div></div>`;
+
+  const tbody=document.getElementById("tableBody");
+  const empty=document.getElementById("emptyMsg");
+  if(!rows.length){ tbody.innerHTML=""; empty.style.display="block"; return; }
+  empty.style.display="none";
+  tbody.innerHTML=rows.map((r,i)=>`
+    <tr>
+      <td><b>${r.name}</b></td>
+      <td><span class="team-tag">${r.team}</span></td>
+      <td>${r.chHanja} <span style="color:var(--muted);font-size:12px">${r.chKorean}</span></td>
+      <td class="center">
+        <span class="prog-mini"><i style="width:${Math.round(r.roundsDone/r.roundsTotal*100)}%"></i></span>
+        <span style="font-size:12px;margin-left:6px">${r.roundsDone}/${r.roundsTotal}</span>
+      </td>
+      <td class="center">${r.examsDone}/${r.examsTotal}</td>
+      <td class="center">${r.score!=="-"?`<span class="score-badge">${r.score}</span>`:'<span style="color:var(--muted)">-</span>'}</td>
+      <td class="center"><button class="view-btn" data-key="${r.key}">보기</button></td>
+    </tr>`).join("");
+  tbody.querySelectorAll(".view-btn").forEach(b=>{
+    b.addEventListener("click",()=>openDetail(b.dataset.key));
+  });
+}
+
+function openDetail(key){
+  const d=ALL[key]; if(!d) return;
+  const pk=parseKey(key);
+  const ch=CHAPTERS[pk.chapter-1];
+  const m=document.getElementById("modalContent");
+  let html=`<h2>${d._name||pk.name} · ${ch?ch.hanja:""} ${ch?ch.korean:""}</h2>
+    <div class="msub">${d._team||""} · 제${pk.chapter}장</div>`;
+  // 회차별
+  (d.rounds||[]).forEach((r,i)=>{
+    if(!r) return;
+    html+=`<div class="rnd"><div class="rh">${i+1}회차 ${r.done?"✓ 완료":""}</div>`;
+    if(r.dateTam||r.dateSim) html+=`<div class="fld"><b>날짜</b> 탐구 ${r.dateTam||"-"} / 심화 ${r.dateSim||"-"}</div>`;
+    if(r.cqAnswer) html+=`<div class="fld"><b>공통질문 1차답</b> ${esc(r.cqAnswer)}</div>`;
+    if(r.questions&&r.questions.length) html+=`<div class="fld"><b>개별질문</b> ${r.questions.map(q=>esc(q.text)+(q.answer?` → ${esc(q.answer)}`:"")).join(" / ")}</div>`;
+    if(r.teamTalk) html+=`<div class="fld"><b>팀토론</b> ${esc(r.teamTalk)}</div>`;
+    if(r.testAnswer) html+=`<div class="fld"><b>시험-질문답</b> ${esc(r.testAnswer)}</div>`;
+    if(r.testEum) html+=`<div class="fld"><b>시험-음</b> ${esc(r.testEum)}</div>`;
+    if(r.testTt) html+=`<div class="fld"><b>시험-뜻</b> ${esc(r.testTt)}</div>`;
+    if(r.testOneLine) html+=`<div class="fld"><b>한 줄 깨달음</b> ${esc(r.testOneLine)}</div>`;
+    html+=`</div>`;
+  });
+  // 종합시험
+  if(d.exams){
+    Object.entries(d.exams).forEach(([k,v])=>{
+      if(!v||!v.done) return;
+      const en=k.replace("exam","");
+      html+=`<div class="exam-box"><div class="eh">🔴 ${en}차 종합시험 ${v.score?`· 객관식 ${v.score}`:""}</div>`;
+      if(v.answers){
+        Object.entries(v.answers).forEach(([ak,av])=>{
+          if(av) html+=`<div class="fld"><b>${ak}</b> ${esc(av)}</div>`;
+        });
+      }
+      html+=`</div>`;
+    });
+  }
+  html+=`<button class="close" onclick="document.getElementById('modalBg').classList.remove('show')">닫기</button>`;
+  m.innerHTML=html;
+  document.getElementById("modalBg").classList.add("show");
+}
+document.getElementById("modalBg").addEventListener("click",e=>{ if(e.target.id==="modalBg") e.currentTarget.classList.remove("show"); });
+
+function esc(s){ return String(s).replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function exportCSV(){
+  const rows=rowsFromData();
+  let csv="학생,팀,장,회차완료,회차총수,시험완료,시험총수,객관식점수\n";
+  rows.forEach(r=>{
+    csv+=`"${r.name}","${r.team}","${r.chHanja} ${r.chKorean}",${r.roundsDone},${r.roundsTotal},${r.examsDone},${r.examsTotal},"${r.score}"\n`;
+  });
+  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`격몽요결_진도_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+</script>
+</body>
+</html>

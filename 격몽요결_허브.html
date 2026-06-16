@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>격몽요결 擊蒙要訣 — 수업 허브</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#26241F;--hanji:#FAF6EC;--hanji-deep:#F1EADA;
+  --jjok:#1F4E5F;--jjok-soft:#E3EDF0;
+  --dancheong:#B5443C;--dan-soft:#F6E6E4;
+  --songhwa:#C9A227;--line:#D9CFBA;--muted:#7A7263;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--hanji);color:var(--ink);min-height:100vh}
+.wrap{max-width:960px;margin:0 auto;padding:40px 20px 80px}
+/* 로그인 */
+.login-screen{position:fixed;inset:0;background:var(--hanji);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:44px 36px;max-width:400px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(38,36,31,.1)}
+.login-card .seal{width:64px;height:64px;border:2.5px solid var(--dancheong);color:var(--dancheong);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif KR',serif;font-weight:900;font-size:22px;line-height:1.2;text-align:center;transform:rotate(-3deg);border-radius:4px;margin:0 auto 20px}
+.login-card h1{font-family:'Noto Serif KR',serif;font-weight:900;font-size:28px}
+.login-card .sub{font-size:13px;color:var(--muted);letter-spacing:.25em;margin:6px 0 28px}
+.login-card input{width:100%;padding:13px 16px;font-size:16px;font-family:inherit;text-align:center;border:1.5px solid var(--line);border-radius:8px;background:var(--hanji);margin-bottom:12px}
+.login-card input:focus{outline:none;border-color:var(--jjok)}
+.login-card .enter-btn{width:100%;padding:14px;font-size:16px;font-weight:700;background:var(--jjok);color:#fff;border:none;border-radius:8px;cursor:pointer}
+.login-card .team-found{font-size:14px;color:var(--dancheong);font-weight:700;min-height:22px;margin-bottom:8px}
+.login-card .admin-link{margin-top:18px;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;text-decoration:underline}
+.admin-panel{display:none;text-align:left}
+.admin-panel.show{display:block}
+.admin-panel h2{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:900;margin-bottom:6px}
+.admin-panel p{font-size:13px;color:var(--muted);margin-bottom:14px}
+.admin-panel .team-row{margin-bottom:10px}
+.admin-panel .team-row label{font-size:13px;font-weight:700;color:var(--jjok);display:block;margin-bottom:3px}
+.admin-panel textarea{width:100%;min-height:40px;padding:8px 10px;font-size:13px;font-family:inherit;border:1.5px solid var(--line);border-radius:6px;background:var(--hanji);resize:vertical}
+.admin-panel .save-roster{width:100%;padding:12px;font-size:15px;font-weight:700;margin-top:8px;background:var(--dancheong);color:#fff;border:none;border-radius:8px;cursor:pointer}
+.admin-panel .back-link{margin-top:10px;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;text-decoration:underline;width:100%}
+.admin-msg{font-size:13px;color:var(--jjok);font-weight:700;text-align:center;margin-top:8px;min-height:18px}
+#adminCodeArea input{width:100%;padding:11px;font-size:15px;text-align:center;border:1.5px solid var(--line);border-radius:8px;background:var(--hanji);margin-bottom:8px;font-family:inherit}
+#adminCodeArea button{width:100%;padding:11px;font-size:15px;font-weight:700;background:var(--jjok);color:#fff;border:none;border-radius:8px;cursor:pointer}
+/* 헤더 */
+.hub-header{text-align:center;padding-bottom:28px;border-bottom:3px solid var(--ink);margin-bottom:10px}
+.hub-header .big-seal{width:80px;height:80px;border:3px solid var(--dancheong);color:var(--dancheong);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif KR',serif;font-weight:900;font-size:24px;line-height:1.2;text-align:center;transform:rotate(-3deg);border-radius:4px;margin:0 auto 16px}
+.hub-header h1{font-family:'Noto Serif KR',serif;font-weight:900;font-size:clamp(28px,6vw,44px);letter-spacing:.06em}
+.hub-header .sub{font-size:14px;color:var(--muted);letter-spacing:.3em;margin-top:6px}
+.me-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:14px 0;border-bottom:1px solid var(--line);margin-bottom:30px}
+.me-bar .me{font-size:15px;font-weight:700}
+.me-bar .me b{color:var(--dancheong)}
+.me-bar .logout{background:none;border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit}
+/* 진도 요약 */
+.progress-summary{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:30px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.progress-summary .ps-label{font-size:13px;color:var(--muted);font-weight:700}
+.progress-bar-wrap{flex:1;min-width:180px;background:var(--hanji-deep);border-radius:999px;height:10px;overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--jjok);border-radius:999px;transition:width .4s}
+.progress-summary .ps-num{font-size:18px;font-weight:700;color:var(--jjok);white-space:nowrap}
+/* 장 그리드 */
+.chapter-section{margin-bottom:14px}
+.chapter-section .section-label{font-size:12px;letter-spacing:.25em;color:var(--muted);font-weight:700;margin-bottom:10px}
+.chapter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.chapter-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;cursor:pointer;transition:all .15s;text-decoration:none;color:inherit;display:block;position:relative;overflow:hidden}
+.chapter-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(38,36,31,.1);border-color:var(--jjok)}
+.chapter-card.done{border-color:var(--songhwa)}
+.chapter-card .ch-num{font-size:12px;letter-spacing:.2em;color:var(--muted);font-weight:700;margin-bottom:6px}
+.chapter-card .ch-hanja{font-family:'Noto Serif KR',serif;font-weight:900;font-size:26px;letter-spacing:.05em}
+.chapter-card .ch-korean{font-size:14px;color:var(--muted);margin-top:2px}
+.chapter-card .ch-desc{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+.chapter-card .ch-meta{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.chapter-card .ch-tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--hanji-deep);color:var(--muted)}
+.chapter-card .ch-tag.exam{background:var(--dan-soft);color:var(--dancheong)}
+.chapter-card .ch-progress{margin-top:12px}
+.chapter-card .ch-prog-bar{background:var(--hanji-deep);border-radius:999px;height:5px;overflow:hidden}
+.chapter-card .ch-prog-fill{height:100%;background:var(--jjok);border-radius:999px;transition:width .4s}
+.chapter-card .ch-prog-label{font-size:11px;color:var(--muted);margin-top:4px}
+.chapter-card .done-stamp{position:absolute;top:12px;right:12px;width:36px;height:36px;border:2px solid var(--songhwa);color:var(--songhwa);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif KR',serif;font-weight:900;font-size:11px;border-radius:3px;transform:rotate(8deg)}
+/* 결과 타임라인 */
+.results-section{margin-top:36px}
+.results-section h2{font-family:'Noto Serif KR',serif;font-weight:900;font-size:20px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.timeline{border-left:2.5px solid var(--line);padding-left:24px;margin-left:10px}
+.tl-item{position:relative;margin-bottom:22px}
+.tl-item::before{content:'';position:absolute;left:-32px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--jjok);border:2px solid #fff;box-shadow:0 0 0 2px var(--jjok)}
+.tl-item.exam-item::before{background:var(--dancheong);box-shadow:0 0 0 2px var(--dancheong)}
+.tl-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.tl-card .tl-date{font-size:11px;letter-spacing:.15em;color:var(--muted);font-weight:700}
+.tl-card .tl-title{font-family:'Noto Serif KR',serif;font-weight:700;font-size:16px;margin:3px 0}
+.tl-card .tl-detail{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.5}
+.tl-card .tl-score{display:inline-block;background:var(--jjok);color:#fff;font-size:13px;font-weight:700;padding:3px 12px;border-radius:999px;margin-top:6px}
+.tl-card .tl-score.exam{background:var(--dancheong)}
+footer{margin-top:50px;border-top:1px solid var(--line);padding-top:16px;font-size:12.5px;color:var(--muted);text-align:center}
+@media(max-width:560px){.chapter-grid{grid-template-columns:1fr 1fr}}
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1F4E5F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="격몽요결">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+</head>
+<body>
+<!-- 로그인 -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div id="loginMain">
+      <div class="seal">擊蒙</div>
+      <h1>격몽요결</h1>
+      <div class="sub">擊蒙要訣 · 栗谷 李珥</div>
+      <input id="loginName" placeholder="이름을 입력하세요" autocomplete="off">
+      <div class="team-found" id="teamFound"></div>
+      <button class="enter-btn" id="enterBtn">공부 시작하기</button>
+      <button class="admin-link" id="adminLink">관리자 (선생님)</button>
+    </div>
+    <div class="admin-panel" id="adminPanel">
+      <h2>관리자 · 팀 설정</h2>
+      <p>각 팀에 이름을 쉼표로 구분해 입력하세요. 저장하면 모든 학생에게 반영됩니다.</p>
+      <div id="adminCodeArea">
+        <input type="password" placeholder="관리자 코드 입력">
+        <button id="adminCodeBtn">확인</button>
+      </div>
+      <div id="rosterArea" style="display:none">
+        <div class="team-row"><label>1팀</label><textarea id="t1" placeholder="이름, 이름, 이름, 이름"></textarea></div>
+        <div class="team-row"><label>2팀</label><textarea id="t2"></textarea></div>
+        <div class="team-row"><label>3팀</label><textarea id="t3"></textarea></div>
+        <div class="team-row"><label>4팀</label><textarea id="t4"></textarea></div>
+        <div class="team-row"><label>5팀</label><textarea id="t5"></textarea></div>
+        <button class="save-roster" id="saveRoster">팀 명단 저장</button>
+      </div>
+      <div class="admin-msg" id="adminMsg"></div>
+      <button class="back-link" id="adminBack">← 돌아가기</button>
+    </div>
+  </div>
+</div>
+<!-- 본문 -->
+<div class="wrap" id="appWrap" style="display:none">
+<div class="hub-header">
+  <div class="big-seal">擊蒙<br>要訣</div>
+  <h1>격몽요결</h1>
+  <div class="sub">擊蒙要訣 · 栗谷 李珥 · 1577</div>
+</div>
+<div class="me-bar">
+  <span class="me" id="meInfo"></span>
+  <button class="logout" id="logoutBtn">나가기</button>
+</div>
+<div class="progress-summary">
+  <span class="ps-label">전체 진도</span>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="totalBar" style="width:0%"></div></div>
+  <span class="ps-num" id="totalNum">0 / 10 장</span>
+</div>
+<div class="chapter-section">
+  <div class="section-label">10장 전체 · 각 장을 눌러 공부를 시작하세요</div>
+  <div class="chapter-grid" id="chapterGrid"></div>
+</div>
+<div class="results-section">
+  <h2>📊 나의 기록</h2>
+  <div class="timeline" id="timeline"><div style="font-size:14px;color:var(--muted)">아직 완료된 회차가 없어요. 첫 번째 장부터 시작해보세요!</div></div>
+</div>
+<footer>擊蒙要訣 · 栗谷 李珥 · 1577 · 자기주도 고전 수업</footer>
+</div>
+<script>
+// 각 장: 파일, 한자, 이름, 설명, 회차수
+const CHAPTERS=[
+  {file:"01_입지장.html",hanja:"立志",korean:"입지장",desc:"뜻을 세우다 — 성인이 될 것을 스스로 기약하라",rounds:8},
+  {file:"02_혁구습장.html",hanja:"革舊習",korean:"혁구습장",desc:"묵은 습관을 버리다 — 공부를 방해하는 다섯 가지 병",rounds:6},
+  {file:"03_지신장.html",hanja:"持身",korean:"지신장",desc:"몸을 바르게 가지다 — 구용九容과 구사九思",rounds:8},
+  {file:"04_독서장.html",hanja:"讀書",korean:"독서장",desc:"책을 읽다 — 소학·대학·논어·맹자의 순서",rounds:8},
+  {file:"05_사친장.html",hanja:"事親",korean:"사친장",desc:"어버이를 섬기다 — 효의 시작과 마침",rounds:6},
+  {file:"06_상제장.html",hanja:"喪制",korean:"상제장",desc:"상례를 다하다 — 죽음 앞의 예와 마음",rounds:6},
+  {file:"07_제례장.html",hanja:"祭禮",korean:"제례장",desc:"제례를 갖추다 — 정성과 공경이 먼저",rounds:6},
+  {file:"08_거가장.html",hanja:"居家",korean:"거가장",desc:"집안을 다스리다 — 화목과 절제",rounds:6},
+  {file:"09_접인장.html",hanja:"接人",korean:"접인장",desc:"사람을 대하다 — 온화하되 휩쓸리지 않기",rounds:6},
+  {file:"10_처세장.html",hanja:"處世",korean:"처세장",desc:"세상에 처하다 — 자기를 바르게 함이 전부",rounds:6}
+];
+let roster={};
+let me={name:"",team:""};
+async function loadRoster(){
+  try{ roster=await gmykLoadRoster()||{}; }catch(e){ roster={}; }
+}
+async function getStudentProgress(name){
+  const results={};
+  try{
+    for(let i=0;i<10;i++){
+      const key=`gmyk_ch${i+1}_${name.replace(/\s+/g,"_")}`;
+      try{ const d=await gmykLoad(key); if(d) results[i]=d; }catch(e){}
+    }
+  }catch(e){}
+  return results;
+}
+// 로그인
+const loginName=document.getElementById("loginName");
+const teamFound=document.getElementById("teamFound");
+loginName.addEventListener("input",()=>{ const t=roster[loginName.value.trim()]; teamFound.textContent=t?`🏷 ${t} 소속입니다`:""; });
+document.getElementById("enterBtn").addEventListener("click",enter);
+loginName.addEventListener("keydown",e=>{ if(e.key==="Enter") enter(); });
+async function enter(){
+  const n=loginName.value.trim();
+  if(!n){ loginName.focus(); return; }
+  me.name=n; me.team=roster[n]||"팀 미지정";
+  await gmykInit();
+  await loadRoster();
+  document.getElementById("loginScreen").style.display="none";
+  document.getElementById("appWrap").style.display="block";
+  document.getElementById("meInfo").innerHTML=`${me.name} · <b>${me.team}</b>`;
+  renderHub();
+}
+document.getElementById("logoutBtn").addEventListener("click",()=>location.reload());
+// 관리자
+document.getElementById("adminLink").addEventListener("click",()=>{
+  document.getElementById("loginMain").style.display="none";
+  document.getElementById("adminPanel").classList.add("show");
+});
+document.getElementById("adminBack").addEventListener("click",()=>{
+  document.getElementById("adminPanel").classList.remove("show");
+  document.getElementById("loginMain").style.display="block";
+});
+document.getElementById("adminCodeBtn").addEventListener("click",()=>{
+  const pw=document.querySelector("#adminCodeArea input").value;
+  if(pw===ADMIN_CODE){
+    document.getElementById("adminCodeArea").style.display="none";
+    document.getElementById("rosterArea").style.display="block";
+    const byTeam={"1팀":[],"2팀":[],"3팀":[],"4팀":[],"5팀":[]};
+    Object.entries(roster).forEach(([n,t])=>{ if(byTeam[t]) byTeam[t].push(n); });
+    for(let i=1;i<=5;i++) document.getElementById("t"+i).value=byTeam[i+"팀"].join(", ");
+  } else { document.getElementById("adminMsg").textContent="코드가 올바르지 않습니다"; }
+});
+document.getElementById("saveRoster").addEventListener("click",async()=>{
+  roster={};
+  for(let i=1;i<=5;i++){
+    document.getElementById("t"+i).value.split(",").map(s=>s.trim()).filter(Boolean).forEach(n=>roster[n]=i+"팀");
+  }
+  try{ await gmykSaveRoster(roster); }catch(e){}
+  document.getElementById("adminMsg").textContent="저장되었습니다 ✓";
+});
+// 허브 렌더
+async function renderHub(){
+  const progress=await getStudentProgress(me.name);
+  const doneCount=Object.values(progress).filter(p=>p&&p.done).length;
+  document.getElementById("totalBar").style.width=(doneCount/10*100)+"%";
+  document.getElementById("totalNum").textContent=`${doneCount} / 10 장`;
+  const grid=document.getElementById("chapterGrid");
+  grid.innerHTML="";
+  CHAPTERS.forEach((ch,i)=>{
+    const p=progress[i];
+    const done=p&&p.done;
+    const roundsArr=p?(p.rounds||[]):[];
+    const roundsDone=roundsArr.filter(r=>r&&r.done).length;
+    const examCount=Math.floor(ch.rounds/4);
+    const examsDone=p&&p.exams?Object.values(p.exams).filter(e=>e&&e.done).length:0;
+    const card=document.createElement("a");
+    card.className="chapter-card"+(done?" done":"");
+    card.href=ch.file+`?name=${encodeURIComponent(me.name)}&team=${encodeURIComponent(me.team)}`;
+    card.innerHTML=`
+      ${done?'<div class="done-stamp">完了</div>':""}
+      <div class="ch-num">第${i+1}章</div>
+      <div class="ch-hanja">${ch.hanja}</div>
+      <div class="ch-korean">${ch.korean}</div>
+      <div class="ch-desc">${ch.desc}</div>
+      <div class="ch-meta">
+        <span class="ch-tag">${ch.rounds}회차</span>
+        <span class="ch-tag exam">🔴 시험 ${examCount}회</span>
+      </div>
+      <div class="ch-progress">
+        <div class="ch-prog-bar"><div class="ch-prog-fill" style="width:${Math.round(roundsDone/ch.rounds*100)}%"></div></div>
+        <div class="ch-prog-label">${roundsDone}/${ch.rounds} 회차 · 시험 ${examsDone}/${examCount}</div>
+      </div>`;
+    grid.appendChild(card);
+  });
+  renderTimeline(progress);
+}
+function renderTimeline(progress){
+  const tl=document.getElementById("timeline");
+  const items=[];
+  Object.entries(progress).forEach(([k,p])=>{
+    const idx=parseInt(k);
+    if(isNaN(idx)||!p) return;
+    const ch=CHAPTERS[idx];
+    (p.rounds||[]).forEach((r,ri)=>{
+      if(!r||!r.done) return;
+      items.push({type:"round",label:`${ch?ch.hanja:""} · ${ri+1}회차`,date:r.date||"",detail:r.testOneLine||""});
+    });
+    if(p.exams){
+      Object.entries(p.exams).forEach(([ek,ev])=>{
+        if(!ev||!ev.done) return;
+        const en=ek.replace("exam","");
+        items.push({type:"exam",label:`${ch?ch.hanja:""} · ${en}차 시험`,date:ev.date||"",detail:"종합시험 완료"});
+      });
+    }
+  });
+  if(!items.length){ tl.innerHTML=`<div style="font-size:14px;color:var(--muted)">아직 완료된 회차가 없어요. 첫 번째 장부터 시작해보세요!</div>`; return; }
+  items.sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+  tl.innerHTML=items.map(item=>`
+    <div class="tl-item ${item.type==="exam"?"exam-item":""}">
+      <div class="tl-card">
+        <div class="tl-date">${item.date?item.date.slice(0,10):""}</div>
+        <div class="tl-title">${item.label}</div>
+        ${item.detail?`<div class="tl-detail">${item.detail}</div>`:""}
+        <span class="tl-score ${item.type==="exam"?"exam":""}">${item.type==="exam"?"시험 완료":"회차 완료"}</span>
+      </div>
+    </div>`).join("");
+}
+(async()=>{ await gmykInit(); await loadRoster(); })();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js").catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>

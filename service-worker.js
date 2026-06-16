@@ -1,11 +1,11 @@
 /* 격몽요결 수업 앱 · 서비스 워커 (오프라인 지원) */
 const CACHE = "gmyk-v1";
 const ASSETS = [
-  "./격몽요결_허브.html",
-  "./01_입지장.html","./02_혁구습장.html","./03_지신장.html",
-  "./04_독서장.html","./05_사친장.html","./06_상제장.html",
-  "./07_제례장.html","./08_거가장.html","./09_접인장.html",
-  "./10_처세장.html",
+  "./index.html",
+  "./ch01.html","./ch02.html","./ch03.html",
+  "./ch04.html","./ch05.html","./ch06.html",
+  "./ch07.html","./ch08.html","./ch09.html",
+  "./ch10.html",
   "./firebase-config.js","./manifest.json",
   "./icon-192.png","./icon-512.png"
 ];

@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>격몽요결 · 처세장 處世</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#26241F;--hanji:#FAF6EC;--hanji-deep:#F1EADA;
+  --jjok:#1F4E5F;--jjok-soft:#E3EDF0;
+  --dancheong:#B5443C;--dan-soft:#F6E6E4;
+  --songhwa:#C9A227;--line:#D9CFBA;--muted:#7A7263;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--hanji);color:var(--ink);line-height:1.7;min-height:100vh}
+.wrap{max-width:900px;margin:0 auto;padding:24px 18px 90px}
+header{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid var(--ink);padding-bottom:14px}
+.title-block h1{font-family:'Noto Serif KR',serif;font-weight:900;font-size:clamp(20px,5vw,32px);letter-spacing:.04em}
+.title-block .sub{font-family:'Noto Serif KR',serif;color:var(--muted);font-size:13px;letter-spacing:.3em;margin-top:2px}
+.seal{width:52px;height:52px;flex:none;border:2.5px solid var(--dancheong);color:var(--dancheong);display:flex;align-items:center;justify-content:center;font-family:'Noto Serif KR',serif;font-weight:900;font-size:16px;line-height:1.2;text-align:center;transform:rotate(-3deg);border-radius:4px}
+.id-bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:14px 0 6px;font-size:14px}
+.id-bar .me{font-weight:700}.id-bar .me b{color:var(--dancheong)}
+.id-bar a.home{font-size:13px;color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+/* 회차 바 */
+.round-bar{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0 18px;align-items:center}
+.round-bar button{font-size:12px;font-weight:700;padding:6px 11px;border:1.5px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;cursor:pointer}
+.round-bar button.on{background:var(--ink);border-color:var(--ink);color:var(--hanji)}
+.round-bar button.done{border-color:var(--songhwa);color:var(--songhwa)}
+.round-bar .exam-btn{background:var(--ink);color:var(--songhwa);border-color:var(--ink);font-size:11px;padding:6px 10px}
+.round-bar .exam-btn.done-exam{background:var(--dancheong);border-color:var(--dancheong);color:#fff}
+/* 문장 띠 */
+.week-sentence{background:#fff;border:1px solid var(--line);border-left:5px solid var(--songhwa);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:18px}
+.week-sentence .ws-label{font-size:11px;letter-spacing:.25em;color:var(--songhwa);font-weight:700}
+.week-sentence .ws-hanmun{font-family:'Noto Serif KR',serif;font-weight:600;font-size:clamp(15px,3vw,20px);letter-spacing:.05em;margin-top:4px}
+/* 날짜 */
+.date-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;align-items:center;font-size:13px}
+.date-row label{font-weight:700;color:var(--muted)}
+.date-row input[type=date]{font-family:inherit;font-size:13px;padding:6px 10px;border:1.5px solid var(--line);border-radius:6px;background:#fff}
+/* 탭 */
+.mode-tabs{display:flex;margin-bottom:22px;border:2px solid var(--ink);border-radius:10px;overflow:hidden}
+.mode-tabs button{flex:1;font-family:inherit;font-size:15px;font-weight:700;padding:12px 8px;background:#fff;color:var(--muted);border:none;cursor:pointer;transition:all .15s}
+.mode-tabs button small{display:block;font-size:11px;font-weight:500;letter-spacing:.12em;margin-top:2px}
+.mode-tabs button.on-tam{background:var(--jjok);color:#fff}
+.mode-tabs button.on-sim{background:var(--dancheong);color:#fff}
+.mode{display:none}.mode.show{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* 활동 카드 */
+.act{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(38,36,31,.05)}
+.act-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.act-head h3{font-family:'Noto Serif KR',serif;font-weight:900;font-size:17px}
+.badge{font-size:11px;font-weight:700;letter-spacing:.1em;padding:3px 9px;border-radius:999px}
+.badge.indiv{background:var(--jjok-soft);color:var(--jjok)}
+.badge.team{background:var(--dan-soft);color:var(--dancheong)}
+.act-desc{font-size:13px;color:var(--muted);margin-bottom:12px}
+/* 단어 카드 */
+.word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:9px}
+.word-card{background:var(--hanji);border:1.5px solid var(--line);border-radius:8px;padding:11px;text-align:center}
+.word-card .w-hanja{font-family:'Noto Serif KR',serif;font-weight:900;font-size:26px;letter-spacing:.06em;margin-bottom:7px}
+.word-card input{width:100%;padding:5px 7px;font-size:13px;font-family:inherit;border:1.5px solid var(--line);border-radius:5px;background:#fff;margin-bottom:4px;text-align:center}
+.word-card input:focus{outline:none;border-color:var(--jjok)}
+.word-card .w-check{font-size:11px;font-weight:700;background:none;border:1.5px solid var(--jjok);color:var(--jjok);padding:4px 9px;border-radius:999px;cursor:pointer}
+.word-card .w-answer{display:none;margin-top:6px;font-size:12px;background:var(--jjok-soft);border-radius:5px;padding:6px}
+.word-card .w-answer.open{display:block}
+.word-card .w-answer b{font-family:'Noto Serif KR',serif}
+/* 낭독 */
+.act label.f{display:block;font-size:13px;font-weight:700;color:var(--jjok);margin:10px 0 4px}
+.act textarea,.act input.t{width:100%;padding:9px 11px;font-size:14px;font-family:inherit;border:1.5px solid var(--line);border-radius:6px;background:var(--hanji);resize:vertical}
+.act textarea{min-height:48px}
+.act textarea:focus,.act input.t:focus{outline:none;border-color:var(--jjok)}
+.scroll-frame{background:var(--hanji);border:1px dashed var(--line);padding:18px 12px;border-radius:6px;overflow-x:auto}
+.vertical-text{writing-mode:vertical-rl;font-family:'Noto Serif KR',serif;font-weight:600;font-size:clamp(18px,3.2vw,25px);letter-spacing:.18em;line-height:2.1;height:250px;margin:0 auto}
+.read-counter{display:flex;align-items:center;gap:11px;margin-top:12px;flex-wrap:wrap}
+.read-counter button{font-size:13px;font-weight:700;padding:9px 15px;background:var(--jjok);color:#fff;border:none;border-radius:6px;cursor:pointer}
+.read-marks{font-size:20px;letter-spacing:5px;color:var(--dancheong);font-family:'Noto Serif KR',serif}
+.read-hint{font-size:12px;color:var(--muted)}
+.pass-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.pass-btn{font-size:13px;font-weight:700;padding:10px 18px;border-radius:6px;border:2px solid var(--jjok);background:#fff;color:var(--jjok);cursor:pointer}
+.pass-btn.passed{background:var(--jjok);color:#fff}
+/* 공통질문 */
+.common-q{margin-top:14px}
+.common-q .locked{border:1.5px dashed var(--line);border-radius:8px;padding:18px;text-align:center;color:var(--muted);font-size:13px}
+.common-q .unlocked{display:none;border:2px solid var(--songhwa);border-radius:8px;padding:14px;background:#FFFDF5}
+.common-q.open .locked{display:none}
+.common-q.open .unlocked{display:block;animation:fade .4s ease}
+.common-q .cq-label{font-size:11px;letter-spacing:.25em;color:var(--songhwa);font-weight:700}
+.common-q .cq-text{font-family:'Noto Serif KR',serif;font-weight:600;font-size:15px;margin:5px 0 3px}
+.common-q .cq-task{font-size:12px;color:var(--dancheong);font-weight:700}
+/* 질문 */
+.q-input-row{display:flex;gap:7px;margin-bottom:12px}
+.q-input-row input{flex:1;padding:9px 11px;font-size:14px;font-family:inherit;border:1.5px solid var(--line);border-radius:6px;background:var(--hanji)}
+.q-input-row button{padding:0 14px;background:var(--dancheong);color:#fff;border:none;border-radius:6px;font-weight:700;font-size:14px;cursor:pointer}
+.q-card{background:var(--hanji);border-left:4px solid var(--songhwa);border-radius:0 6px 6px 0;padding:11px 13px;margin-bottom:8px}
+.q-card .q-text{font-weight:700;font-size:14px}
+.q-card textarea{width:100%;margin-top:6px;background:#fff;min-height:40px}
+.q-card .q-del{float:right;background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px}
+/* 심화일 */
+.pick-list{display:flex;flex-direction:column;gap:6px}
+.pick-item{display:flex;align-items:flex-start;gap:8px;background:var(--hanji);border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer}
+.pick-item.picked{border-color:var(--dancheong);background:var(--dan-soft)}
+.pick-item span{font-size:13.5px}
+.empty-note{font-size:13px;color:var(--muted);border:1.5px dashed var(--line);border-radius:8px;padding:13px;text-align:center}
+.debate-board{border:1.5px solid var(--line);border-radius:8px;padding:11px 13px;background:var(--hanji);margin-bottom:9px}
+.debate-board .db-row{font-size:13px;margin-bottom:3px}
+.debate-board .db-row b{color:var(--dancheong)}
+/* 시험 블록 */
+.exam-block{background:var(--ink);color:var(--hanji);border-radius:10px;padding:20px;margin-top:6px}
+.exam-block h4{font-family:'Noto Serif KR',serif;font-weight:900;font-size:17px;margin-bottom:12px;color:var(--songhwa)}
+.exam-q{background:rgba(255,255,255,.07);border-radius:8px;padding:13px;margin-bottom:10px}
+.exam-q .q-num{font-size:11px;letter-spacing:.2em;color:var(--songhwa);font-weight:700;margin-bottom:5px}
+.exam-q .q-hanja-big{font-family:'Noto Serif KR',serif;font-weight:900;font-size:34px;text-align:center;padding:10px 0;letter-spacing:.1em}
+.exam-q .q-sent{font-family:'Noto Serif KR',serif;font-weight:600;font-size:14px;margin-bottom:7px;line-height:1.7}
+.exam-q textarea{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--hanji);min-height:46px;resize:vertical}
+.exam-q textarea:focus{outline:none;border-color:var(--songhwa)}
+.exam-q .write-hint{font-size:11px;color:var(--songhwa);font-weight:700;margin-top:4px}
+/* 저장 */
+.save-row{display:flex;align-items:center;gap:11px;margin-top:12px}
+.save-btn{font-size:14px;font-weight:700;padding:11px 22px;background:var(--dancheong);color:#fff;border:none;border-radius:6px;cursor:pointer}
+.save-msg{font-size:13px;color:var(--jjok);font-weight:700;opacity:0;transition:opacity .3s}
+.save-msg.show{opacity:1}
+.stamp{display:none;margin-top:16px;text-align:center}
+.stamp.show{display:block;animation:stampIn .4s cubic-bezier(.2,1.6,.4,1)}
+@keyframes stampIn{from{transform:scale(2);opacity:0}to{transform:scale(1);opacity:1}}
+.stamp .seal{margin:0 auto;width:65px;height:65px;font-size:20px}
+.stamp p{font-size:12px;color:var(--muted);margin-top:6px}
+/* 시험 전용 섹션 */
+.exam-section{background:#fff;border:2px solid var(--dancheong);border-radius:10px;padding:22px;margin-bottom:14px}
+.exam-section h3{font-family:'Noto Serif KR',serif;font-weight:900;font-size:18px;color:var(--dancheong);margin-bottom:6px}
+.exam-section .exam-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+.choice-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.choice-item{display:flex;align-items:flex-start;gap:8px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.18);border-radius:6px;padding:9px 11px;cursor:pointer;font-size:13.5px}
+.choice-item.picked{border-color:var(--songhwa);background:rgba(201,162,39,.18)}
+.choice-item input{margin-top:3px}
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.match-col{display:flex;flex-direction:column;gap:6px}
+.match-row{font-size:12.5px;background:rgba(255,255,255,.06);border-radius:5px;padding:7px 9px;line-height:1.5}
+.match-row b{color:var(--songhwa)}
+@media(max-width:560px){.match-wrap{grid-template-columns:1fr}}
+footer{margin-top:40px;border-top:1px solid var(--line);padding-top:14px;font-size:12px;color:var(--muted);text-align:center}
+@media(max-width:560px){.vertical-text{height:220px;font-size:17px}.word-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1F4E5F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="격몽요결">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="title-block">
+    <h1>第10章 · 處世 — 세상에 처하다</h1>
+    <div class="sub">擊蒙要訣 · 처세장 · 栗谷 李珥</div>
+  </div>
+  <div class="seal">處世</div>
+</header>
+<div class="id-bar">
+  <span class="me" id="meInfo">로딩 중...</span>
+  <a class="home" href="index.html">← 허브로</a>
+</div>
+<div class="round-bar" id="roundBar"></div>
+<div id="examSectionWrap" style="display:none">
+  <div class="exam-section" id="examSection">
+    <h3 id="examTitle">🔴 시험</h3>
+    <div class="exam-sub" id="examSub"></div>
+    <div id="examQuestions"></div>
+    <div class="save-row">
+      <button class="save-btn" id="examSaveBtn">시험 제출</button>
+      <span class="save-msg" id="examSaveMsg">제출되었습니다 ✓</span>
+    </div>
+    <div class="stamp" id="examStamp"><div class="seal">試<br>完</div><p id="examStampText"></p></div>
+  </div>
+</div>
+<div id="roundWrap">
+  <div class="week-sentence">
+    <div class="ws-label">이번 회차의 문장 · 一回一文</div>
+    <div class="ws-hanmun" id="wsHanmun"></div>
+  </div>
+  <div class="date-row">
+    <label>탐구일</label><input type="date" id="dateTam">
+    <label>심화일</label><input type="date" id="dateSim">
+  </div>
+  <div class="mode-tabs">
+    <button id="tabTam" class="on-tam">🔍 탐구일<small>스스로 익히는 날</small></button>
+    <button id="tabSim">💬 심화일<small>함께 깊어지는 날</small></button>
+  </div>
+  <!-- 탐구일 -->
+  <div class="mode show" id="modeTam">
+    <div class="act">
+      <div class="act-head"><h3>① 음·뜻 찾기</h3><span class="badge indiv">개별</span></div>
+      <p class="act-desc">단어 하나하나, 사전을 찾아 혼자 힘으로 채워보세요.</p>
+      <div class="word-grid" id="wordGrid"></div>
+    </div>
+    <div class="act">
+      <div class="act-head"><h3>② 낭독 연습</h3><span class="badge indiv">개별</span></div>
+      <p class="act-desc">입에 붙을 때까지 반복하세요.</p>
+      <div class="scroll-frame"><div class="vertical-text" id="vText"></div></div>
+      <div class="read-counter">
+        <button id="readBtn">낭독 한 번 완료 🔊</button>
+        <span class="read-marks" id="readMarks"></span>
+        <span class="read-hint" id="readHint"></span>
+      </div>
+    </div>
+    <div class="act">
+      <div class="act-head"><h3>③ 낭독 시험</h3><span class="badge team">팀별 진행</span></div>
+      <p class="act-desc">팀별로 모여 낭독 시험을 봅니다. 통과하면 공통질문이 열립니다!</p>
+      <div class="pass-row">
+        <button class="pass-btn" id="readPassBtn">낭독 시험 통과 ✓</button>
+        <span style="font-size:12px;color:var(--muted)">통과 시 공통질문 봉인 해제 🔓</span>
+      </div>
+      <div class="common-q" id="commonQ">
+        <div class="locked">🔒 낭독 시험을 통과하면 공통질문이 공개됩니다</div>
+        <div class="unlocked">
+          <div class="cq-label">共通質問 · 이번 회차 공통질문</div>
+          <div class="cq-text" id="cqText"></div>
+          <div class="cq-task">📌 과제 — 다음 시간까지 1차 답을 찾아오세요</div>
+          <label class="f">나의 1차 답</label>
+          <textarea id="cqAnswer" placeholder="책, 검색, 어른께 여쭙기 등 어떤 방법이든 좋아요"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="act">
+      <div class="act-head"><h3>④ 개별질문 적기</h3><span class="badge indiv">개별</span></div>
+      <p class="act-desc">나만의 질문을 적어두세요. 심화일에 팀 질문 후보가 됩니다.</p>
+      <div class="q-input-row">
+        <input id="qInput" placeholder="나의 질문을 적어보세요">
+        <button id="qAdd">추가</button>
+      </div>
+      <div id="qList"></div>
+    </div>
+  </div>
+  <!-- 심화일 -->
+  <div class="mode" id="modeSim">
+    <div class="act">
+      <div class="act-head"><h3>① 팀 질문 선택</h3><span class="badge team">팀 (4명)</span></div>
+      <p class="act-desc">개별질문 중 토론할 질문 하나를 고르세요.</p>
+      <div class="pick-list" id="pickList"></div>
+      <label class="f">다른 팀원의 질문이 선택됐다면</label>
+      <input class="t" id="pickedOther" placeholder="팀이 선택한 질문을 적어주세요">
+    </div>
+    <div class="act">
+      <div class="act-head"><h3>② 팀 토론</h3><span class="badge team">팀 (4명)</span></div>
+      <p class="act-desc">공통질문과 팀 선택 질문으로 토론합니다.</p>
+      <div class="debate-board">
+        <div class="db-row"><b>공통질문</b> · <span id="dbCommon"></span></div>
+        <div class="db-row"><b>팀 질문</b> · <span id="dbTeam">아직 선택 전</span></div>
+      </div>
+      <label class="f">토론에서 나온 생각들</label>
+      <textarea id="teamTalk" style="min-height:75px" placeholder="팀원들의 다양한 생각을 기록하세요"></textarea>
+    </div>
+    <div class="act">
+      <div class="act-head"><h3>③ 시험</h3><span class="badge indiv">개별</span></div>
+      <p class="act-desc">이번 회차 마무리. 혼자 힘으로 작성하세요.</p>
+      <div class="exam-block">
+        <h4>📝 이번 회차 시험</h4>
+        <div class="exam-q">
+          <div class="q-num">시험 1 · 질문 답</div>
+          <div class="q-sent" id="examQ1"></div>
+          <textarea id="testAnswer" placeholder="토론을 거쳐 깊어진 나의 답"></textarea>
+        </div>
+        <div class="exam-q">
+          <div class="q-num">시험 2 · 음(音) 쓰기</div>
+          <div class="q-sent" id="examQ2"></div>
+          <textarea id="testEum" placeholder="보지 않고 음을 써보세요"></textarea>
+        </div>
+        <div class="exam-q">
+          <div class="q-num">시험 3 · 뜻 쓰기</div>
+          <div class="q-sent" id="examQ3"></div>
+          <textarea id="testTt" placeholder="내 말로 풀어 쓰세요"></textarea>
+        </div>
+        <div class="exam-q">
+          <div class="q-num">시험 4 · 한자 쓰기 (노트에 직접)</div>
+          <div class="q-hanja-big" id="examHanja"></div>
+          <div class="write-hint">📝 위 한자를 노트에 직접 쓰세요. 완료 후 아래에 체크하세요.</div>
+          <textarea id="testHanja" placeholder="완료 후: '완료' 또는 느낀 점 적기" style="margin-top:7px"></textarea>
+        </div>
+      </div>
+      <label class="f" style="margin-top:12px">이번 회차의 한 줄 깨달음</label>
+      <textarea id="testOneLine" placeholder="오늘 공부에서 가장 마음에 남는 것"></textarea>
+      <div class="save-row">
+        <button class="save-btn" id="saveBtn">이번 회차 완료</button>
+        <span class="save-msg" id="saveMsg">저장되었습니다 ✓</span>
+      </div>
+      <div class="stamp" id="stamp"><div class="seal">完<br>了</div><p id="stampText"></p></div>
+    </div>
+  </div>
+</div>
+<footer>擊蒙要訣 第10章 · 處世 · 세상에 처하다 · 一回一文</footer>
+</div>
+<script>
+const ROUNDS = [{"hanmun": "處世之道는 正己而已니라", "eum": "처세지도는 정기이이니라", "tt": "세상에 처하는 도리는 자기 자신을 바르게 하는 것뿐이다.", "words": [{"h": "處世之道", "e": "처세지도", "t": "세상에 처하는 도리"}, {"h": "正己", "e": "정기", "t": "자기 자신을 바르게 함"}, {"h": "而已", "e": "이이", "t": "~뿐이다"}], "common": "세상을 바꾸기 위해 먼저 자신을 바꿔야 한다는 말, 동의하는가?"}, {"hanmun": "勿以衆人之所爲爲可요 必以聖人之言爲準이니라", "eum": "물이중인지소위위가요 필이성인지언위준이니라", "tt": "많은 사람들이 하는 바를 옳다고 여기지 말고, 반드시 성인의 말을 기준으로 삼아야 한다.", "words": [{"h": "勿以衆人所爲", "e": "물이중인소위", "t": "많은 사람들이 하는 바로 여기지 말라"}, {"h": "爲可", "e": "위가", "t": "옳다고 여기다"}, {"h": "必以聖人之言", "e": "필이성인지언", "t": "반드시 성인의 말로써"}, {"h": "爲準", "e": "위준", "t": "기준으로 삼다"}], "common": "다수가 하는 것이 항상 옳은가? 사회적 압력에 흔들리지 않으려면?"}, {"hanmun": "出處進退는 必以義니라", "eum": "출처진퇴는 필이의니라", "tt": "나아가고 물러남은 반드시 의(義)를 기준으로 해야 한다.", "words": [{"h": "出處", "e": "출처", "t": "나아감과 물러남"}, {"h": "進退", "e": "진퇴", "t": "나아가고 물러남"}, {"h": "必以義", "e": "필이의", "t": "반드시 의를 기준으로"}], "common": "이익이 아닌 의(義)를 기준으로 선택한다는 것, 오늘날 가능한가?"}, {"hanmun": "臨利害之際하여 能辨義利하면 其賢矣니라", "eum": "임이해지제하여 능변의리하면 기현의니라", "tt": "이해관계의 경계에 임하여 능히 의(義)와 이(利)를 분별할 수 있다면, 그 사람은 어진 사람이다.", "words": [{"h": "臨利害之際", "e": "임이해지제", "t": "이해관계의 경계에 임함"}, {"h": "能辨", "e": "능변", "t": "능히 분별함"}, {"h": "義利", "e": "의리", "t": "의로움과 이익"}, {"h": "其賢", "e": "기현", "t": "그 사람은 어질다"}], "common": "의(義)와 이(利)가 충돌할 때 어떻게 선택해야 하는가?"}, {"hanmun": "知足者는 富하고 强行者는 有志니라", "eum": "지족자는 부하고 강행자는 유지니라", "tt": "만족할 줄 아는 자는 부유하고, 힘써 행하는 자는 뜻이 있다.", "words": [{"h": "知足者", "e": "지족자", "t": "만족할 줄 아는 자"}, {"h": "富", "e": "부", "t": "부유하다"}, {"h": "强行者", "e": "강행자", "t": "힘써 행하는 자"}, {"h": "有志", "e": "유지", "t": "뜻이 있다"}], "common": "格蒙要訣의 마지막 문장이 이 말인 이유는? 1장 입지와 어떻게 연결되는가?"}, {"hanmun": "人生斯世에 非學問이면 無以爲人이니라", "eum": "인생사세에 비학문이면 무이위인이니라", "tt": "사람이 이 세상에 태어나서 학문이 아니면 올바른 사람이 될 수 없다.", "words": [{"h": "人生斯世", "e": "인생사세", "t": "사람이 이 세상에 태어남"}, {"h": "非學問", "e": "비학문", "t": "학문이 아니면"}, {"h": "無以爲人", "e": "무이위인", "t": "사람이 될 수 없다"}], "common": "격몽요결 서문의 첫 문장이 마지막 장에서 다시 울린다면, 이 책의 메시지는 무엇인가?"}];
+const CH_NUM = 10;
+const SK = "gmyk_ch10_";
+let me = {name:"",team:""};
+let state = {round:0,mode:"tam",rounds:[],exams:{}};
+let viewMode = "round"; // "round" | "exam"
+
+function rk(){
+  while(state.rounds.length<=state.round) state.rounds.push(null);
+  if(!state.rounds[state.round]) state.rounds[state.round]={
+    dateTam:"",dateSim:"",words:{},reads:0,readPass:false,cqAnswer:"",
+    questions:[],pickedIdx:-1,pickedOther:"",teamTalk:"",
+    testAnswer:"",testEum:"",testTt:"",testHanja:"",testOneLine:"",done:false
+  };
+  return state.rounds[state.round];
+}
+function ek(n){ return "exam"+n; }
+function storageKey(){ return SK+me.name.replace(/\s+/g,"_"); }
+
+async function loadState(){
+  const p=new URLSearchParams(location.search);
+  me.name=p.get("name")||""; me.team=p.get("team")||"";
+  document.getElementById("meInfo").innerHTML=me.name?`${me.name} · <b>${me.team}</b>`:"이름 없음";
+  await gmykInit();
+  try{
+    const d=await gmykLoad(storageKey());
+    if(d) state=d;
+  }catch(e){ console.warn(e); }
+  renderAll();
+}
+async function persist(){
+  try{
+    // 검색/대시보드용 메타 정보 포함
+    state._name=me.name; state._team=me.team; state._chapter=CH_NUM;
+    await gmykSave(storageKey(), state);
+  }catch(e){ console.warn(e); }
+}
+
+// 탭
+const tabTam=document.getElementById("tabTam"),tabSim=document.getElementById("tabSim");
+tabTam.addEventListener("click",()=>{
+  tabTam.classList.add("on-tam");tabSim.classList.remove("on-sim");
+  document.getElementById("modeTam").classList.add("show");document.getElementById("modeSim").classList.remove("show");
+});
+tabSim.addEventListener("click",()=>{
+  tabSim.classList.add("on-sim");tabTam.classList.remove("on-tam");
+  document.getElementById("modeSim").classList.add("show");document.getElementById("modeTam").classList.remove("show");
+  renderSim();
+});
+
+// 날짜
+document.getElementById("dateTam").addEventListener("change",e=>{rk().dateTam=e.target.value;persist();});
+document.getElementById("dateSim").addEventListener("change",e=>{rk().dateSim=e.target.value;persist();});
+
+// 회차 바
+function renderRoundBar(){
+  const bar=document.getElementById("roundBar");
+  bar.innerHTML="";
+  ROUNDS.forEach((r,i)=>{
+    const b=document.createElement("button");
+    const done=state.rounds[i]&&state.rounds[i].done;
+    b.textContent=`${i+1}회차${done?" ✓":""}`;
+    if(i===state.round&&viewMode==="round") b.classList.add("on");
+    if(done) b.classList.add("done");
+    b.addEventListener("click",()=>{state.round=i;viewMode="round";persist();renderAll();});
+    bar.appendChild(b);
+    // 4회차마다 시험 버튼
+    if((i+1)%4===0){
+      const examIdx=Math.floor(i/4)+1;
+      const eb=document.createElement("button");
+      const examDone=state.exams[ek(examIdx)]&&state.exams[ek(examIdx)].done;
+      eb.className="exam-btn"+(examDone?" done-exam":"");
+      eb.textContent=`🔴 ${examIdx}차 시험${examDone?" ✓":""}`;
+      eb.addEventListener("click",()=>{viewMode="exam";state.examIdx=examIdx;renderAll();});
+      bar.appendChild(eb);
+    }
+  });
+}
+
+function renderAll(){
+  renderRoundBar();
+  if(viewMode==="exam"){
+    document.getElementById("roundWrap").style.display="none";
+    document.getElementById("examSectionWrap").style.display="block";
+    renderExam(state.examIdx);
+  } else {
+    document.getElementById("roundWrap").style.display="block";
+    document.getElementById("examSectionWrap").style.display="none";
+    renderRound();
+  }
+}
+
+function renderRound(){
+  const R=ROUNDS[state.round],s=rk();
+  document.getElementById("wsHanmun").textContent=R.hanmun;
+  document.getElementById("vText").textContent=R.hanmun;
+  document.getElementById("dateTam").value=s.dateTam||"";
+  document.getElementById("dateSim").value=s.dateSim||"";
+  // 단어 카드
+  const grid=document.getElementById("wordGrid");grid.innerHTML="";
+  R.words.forEach((w,i)=>{
+    const saved=s.words[i]||{e:"",t:""};
+    const card=document.createElement("div");card.className="word-card";
+    card.innerHTML=`<div class="w-hanja">${w.h}</div>
+      <input placeholder="음" value="${saved.e}" data-f="e">
+      <input placeholder="뜻" value="${saved.t}" data-f="t">
+      <button class="w-check">확인</button>
+      <div class="w-answer"><b>${w.e}</b> · ${w.t}</div>`;
+    card.querySelectorAll("input").forEach(inp=>{
+      inp.addEventListener("change",()=>{if(!s.words[i])s.words[i]={e:"",t:""};s.words[i][inp.dataset.f]=inp.value;persist();});
+    });
+    const ans=card.querySelector(".w-answer"),btn=card.querySelector(".w-check");
+    btn.addEventListener("click",()=>{ans.classList.toggle("open");btn.textContent=ans.classList.contains("open")?"닫기":"확인";});
+    grid.appendChild(card);
+  });
+  drawReads();drawPass();
+  document.getElementById("cqText").textContent=R.common;
+  document.getElementById("cqAnswer").value=s.cqAnswer||"";
+  document.getElementById("commonQ").classList.toggle("open",!!s.readPass);
+  renderQuestions();renderSim();
+  document.getElementById("stamp").classList.toggle("show",!!s.done);
+  // 시험 문제
+  document.getElementById("examQ1").textContent=R.common;
+  document.getElementById("examQ2").textContent=R.hanmun+" — 음을 쓰세요";
+  document.getElementById("examQ3").textContent=R.hanmun+" — 뜻을 쓰세요";
+  document.getElementById("examHanja").textContent=R.words[0]?R.words[0].h:"";
+  document.getElementById("testAnswer").value=s.testAnswer||"";
+  document.getElementById("testEum").value=s.testEum||"";
+  document.getElementById("testTt").value=s.testTt||"";
+  document.getElementById("testHanja").value=s.testHanja||"";
+  document.getElementById("testOneLine").value=s.testOneLine||"";
+}
+
+// 4회차 종합시험 - 다양한 문제 유형
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+// 시험 문제를 생성 (회차 범위 기반, 결정적으로 생성되도록 seed 사용)
+function buildExamQuestions(startR,endR){
+  const qs=[];
+  const rounds=[];
+  for(let ri=startR;ri<=endR&&ri<ROUNDS.length;ri++) rounds.push({idx:ri,data:ROUNDS[ri]});
+  // 이 범위의 모든 단어 모으기 (객관식 오답 풀)
+  let allWords=[];
+  rounds.forEach(r=>{ (r.data.words||[]).forEach(w=>allWords.push(w)); });
+
+  // 1) 객관식 — 단어 뜻 고르기 (회차당 1문제)
+  rounds.forEach((r,k)=>{
+    const w=(r.data.words||[])[0];
+    if(!w) return;
+    const distractors=shuffle(allWords.filter(x=>x.t!==w.t)).slice(0,3).map(x=>x.t);
+    const options=shuffle([w.t,...distractors]);
+    qs.push({
+      type:"choice",
+      prompt:`다음 한자(어)의 뜻으로 알맞은 것은? <b style="font-family:'Noto Serif KR',serif;font-size:20px">${w.h}</b> (${w.e})`,
+      options:options,
+      answer:w.t,
+      key:`c_${r.idx}`
+    });
+  });
+
+  // 2) 빈칸 채우기 — 문장에서 첫 단어를 빈칸으로
+  rounds.forEach(r=>{
+    const w=(r.data.words||[])[0];
+    if(!w) return;
+    const blanked=r.data.hanmun.replace(w.h,"□□");
+    qs.push({
+      type:"fill",
+      prompt:`빈칸(□□)에 들어갈 알맞은 한자(어)와 그 뜻을 쓰세요.<br><span style="font-family:'Noto Serif KR',serif;font-size:16px">${blanked}</span>`,
+      hint:`힌트 — 음: ${w.e}`,
+      answer:`${w.h} (${w.t})`,
+      key:`f_${r.idx}`
+    });
+  });
+
+  // 3) 짝 맞추기 — 한문과 뜻 연결 (범위 전체 1문제)
+  const pairItems=rounds.map((r,i)=>({ num:i+1, hanmun:r.data.hanmun, tt:r.data.tt }));
+  qs.push({
+    type:"match",
+    prompt:"아래 한문 문장과 뜻을 바르게 짝지으세요. (예: 1-나, 2-가 …)",
+    pairItems:pairItems,
+    key:"match"
+  });
+
+  // 4) 서술형 — 범위 전체 관통 질문
+  qs.push({
+    type:"essay",
+    prompt:`${startR+1}~${endR+1}회차의 문장들을 통해 가장 크게 깨달은 점, 또는 가장 인상 깊었던 가르침을 자유롭게 서술하세요.`,
+    key:"essay"
+  });
+
+  return qs;
+}
+
+function renderExam(examIdx){
+  const startR=(examIdx-1)*4,endR=Math.min(startR+3,ROUNDS.length-1);
+  const examKey=ek(examIdx);
+  const saved=state.exams[examKey]||{answers:{},done:false};
+  document.getElementById("examTitle").textContent=`🔴 ${examIdx}차 종합시험`;
+  document.getElementById("examSub").textContent=`${startR+1}~${endR+1}회차 종합 · 객관식 · 빈칸 · 짝맞추기 · 서술형`;
+  const container=document.getElementById("examQuestions");
+  container.innerHTML="";
+  const qs=buildExamQuestions(startR,endR);
+  state._examQs=qs; // 채점/저장용 보관
+  let qNo=1;
+  qs.forEach((q)=>{
+    const div=document.createElement("div");
+    div.className="exam-q";
+    if(q.type==="choice"){
+      const sel=saved.answers[q.key]||"";
+      div.innerHTML=`<div class="q-num">문제 ${qNo} · 객관식</div>
+        <div class="q-sent">${q.prompt}</div>
+        <div class="choice-list">${q.options.map((opt,oi)=>`
+          <label class="choice-item${sel===opt?' picked':''}">
+            <input type="radio" name="${q.key}" value="${opt.replace(/"/g,'&quot;')}" ${sel===opt?'checked':''}>
+            <span>${['가','나','다','라'][oi]}. ${opt}</span>
+          </label>`).join('')}</div>`;
+    } else if(q.type==="fill"){
+      div.innerHTML=`<div class="q-num">문제 ${qNo} · 빈칸 채우기</div>
+        <div class="q-sent">${q.prompt}</div>
+        <div class="write-hint">${q.hint||''}</div>
+        <textarea data-key="${q.key}" placeholder="한자와 뜻을 쓰세요">${saved.answers[q.key]||''}</textarea>`;
+    } else if(q.type==="match"){
+      const letters=['가','나','다','라','마','바','사','아'];
+      const shuffledTt=shuffle(q.pairItems.map((p,i)=>({letter:letters[i],tt:p.tt})));
+      div.innerHTML=`<div class="q-num">문제 ${qNo} · 짝 맞추기</div>
+        <div class="q-sent">${q.prompt}</div>
+        <div class="match-wrap">
+          <div class="match-col">
+            ${q.pairItems.map(p=>`<div class="match-row"><b>${p.num}.</b> <span style="font-family:'Noto Serif KR',serif">${p.hanmun}</span></div>`).join('')}
+          </div>
+          <div class="match-col">
+            ${shuffledTt.map(s=>`<div class="match-row"><b>${s.letter}.</b> ${s.tt}</div>`).join('')}
+          </div>
+        </div>
+        <textarea data-key="${q.key}" placeholder="예: 1-나, 2-가, 3-라, 4-다">${saved.answers[q.key]||''}</textarea>`;
+    } else if(q.type==="essay"){
+      div.innerHTML=`<div class="q-num">문제 ${qNo} · 서술형</div>
+        <div class="q-sent">${q.prompt}</div>
+        <textarea data-key="${q.key}" style="min-height:90px" placeholder="자유롭게 생각을 서술하세요">${saved.answers[q.key]||''}</textarea>`;
+    }
+    container.appendChild(div);
+    // 객관식 선택 시 하이라이트
+    if(q.type==="choice"){
+      div.querySelectorAll('input[type=radio]').forEach(r=>{
+        r.addEventListener('change',()=>{
+          div.querySelectorAll('.choice-item').forEach(ci=>ci.classList.remove('picked'));
+          r.closest('.choice-item').classList.add('picked');
+        });
+      });
+    }
+    qNo++;
+  });
+  document.getElementById("examStamp").classList.toggle("show",!!saved.done);
+  document.getElementById("examStampText").textContent=saved.done?`${examIdx}차 시험 완료 — ${me.name}`:"";
+}
+
+document.getElementById("examSaveBtn").addEventListener("click",async()=>{
+  const examIdx=state.examIdx;
+  const examKey=ek(examIdx);
+  if(!state.exams[examKey]) state.exams[examKey]={answers:{},done:false};
+  const saved=state.exams[examKey];
+  const qs=state._examQs||[];
+  let correct=0,gradable=0;
+  qs.forEach(q=>{
+    if(q.type==="choice"){
+      const checked=document.querySelector(`input[name="${q.key}"]:checked`);
+      const val=checked?checked.value:"";
+      saved.answers[q.key]=val;
+      gradable++;
+      if(val===q.answer) correct++;
+    } else {
+      const el=document.querySelector(`textarea[data-key="${q.key}"]`);
+      if(el) saved.answers[q.key]=el.value;
+    }
+  });
+  saved.score=gradable?`${correct}/${gradable}`:null; // 객관식 자동 채점 결과
+  saved.done=true; saved.date=new Date().toISOString();
+  await persist();
+  const msg=document.getElementById("examSaveMsg"); msg.classList.add("show");
+  document.getElementById("examStamp").classList.add("show");
+  const scoreTxt=saved.score?` · 객관식 ${saved.score} 정답`:"";
+  document.getElementById("examStampText").textContent=`${examIdx}차 시험 완료 — ${me.name}${scoreTxt}`;
+  renderRoundBar();
+  setTimeout(()=>msg.classList.remove("show"),2500);
+});
+
+function drawReads(){
+  const s=rk();
+  document.getElementById("readMarks").textContent="正".repeat(Math.floor(s.reads/5))+["","一","二","三","四"][s.reads%5];
+  const h=document.getElementById("readHint");
+  if(!s.reads)h.textContent="아직 낭독 전이에요";
+  else if(s.reads<3)h.textContent=`${s.reads}번 낭독! ${3-s.reads}번 더`;
+  else h.textContent=`${s.reads}번 낭독 완료! 훌륭해요 👏`;
+}
+document.getElementById("readBtn").addEventListener("click",()=>{rk().reads++;drawReads();persist();});
+
+function drawPass(){
+  const btn=document.getElementById("readPassBtn");
+  btn.classList.toggle("passed",!!rk().readPass);
+  btn.textContent=rk().readPass?"낭독 시험 통과 완료 ✓":"낭독 시험 통과 ✓";
+}
+document.getElementById("readPassBtn").addEventListener("click",()=>{
+  rk().readPass=!rk().readPass;drawPass();
+  document.getElementById("commonQ").classList.toggle("open",!!rk().readPass);persist();
+});
+document.getElementById("cqAnswer").addEventListener("change",e=>{rk().cqAnswer=e.target.value;persist();});
+
+function renderQuestions(){
+  const list=document.getElementById("qList");list.innerHTML="";
+  rk().questions.forEach((q,i)=>{
+    const c=document.createElement("div");c.className="q-card";
+    c.innerHTML=`<button class="q-del">삭제</button><div class="q-text">Q. ${q.text}</div>
+      <textarea placeholder="내가 생각해 본 답">${q.answer||""}</textarea>`;
+    c.querySelector(".q-del").addEventListener("click",()=>{rk().questions.splice(i,1);renderQuestions();renderSim();persist();});
+    c.querySelector("textarea").addEventListener("change",e=>{rk().questions[i].answer=e.target.value;persist();});
+    list.appendChild(c);
+  });
+}
+document.getElementById("qAdd").addEventListener("click",addQ);
+document.getElementById("qInput").addEventListener("keydown",e=>{if(e.key==="Enter")addQ();});
+function addQ(){
+  const inp=document.getElementById("qInput"),t=inp.value.trim();
+  if(!t)return;
+  rk().questions.push({text:t,answer:""});inp.value="";renderQuestions();renderSim();persist();
+}
+
+function renderSim(){
+  const R=ROUNDS[state.round],s=rk();
+  const pick=document.getElementById("pickList");pick.innerHTML="";
+  if(!s.questions.length){
+    pick.innerHTML=`<div class="empty-note">탐구일에 적은 개별질문이 여기에 나타납니다.</div>`;
+  } else {
+    s.questions.forEach((q,i)=>{
+      const item=document.createElement("label");
+      item.className="pick-item"+(s.pickedIdx===i?" picked":"");
+      item.innerHTML=`<input type="radio" name="pick" ${s.pickedIdx===i?"checked":""}><span>${q.text}</span>`;
+      item.addEventListener("click",()=>{s.pickedIdx=i;s.pickedOther="";document.getElementById("pickedOther").value="";renderSim();persist();});
+      pick.appendChild(item);
+    });
+  }
+  document.getElementById("pickedOther").value=s.pickedOther||"";
+  document.getElementById("dbCommon").textContent=R.common;
+  const tq=s.pickedOther||(s.pickedIdx>=0&&s.questions[s.pickedIdx]?s.questions[s.pickedIdx].text:"");
+  document.getElementById("dbTeam").textContent=tq||"아직 선택 전";
+  document.getElementById("teamTalk").value=s.teamTalk||"";
+}
+document.getElementById("pickedOther").addEventListener("change",e=>{rk().pickedOther=e.target.value;if(e.target.value)rk().pickedIdx=-1;renderSim();persist();});
+document.getElementById("teamTalk").addEventListener("change",e=>{rk().teamTalk=e.target.value;persist();});
+
+document.getElementById("saveBtn").addEventListener("click",async()=>{
+  const s=rk();
+  s.testAnswer=document.getElementById("testAnswer").value;
+  s.testEum=document.getElementById("testEum").value;
+  s.testTt=document.getElementById("testTt").value;
+  s.testHanja=document.getElementById("testHanja").value;
+  s.testOneLine=document.getElementById("testOneLine").value;
+  s.done=true;s.date=new Date().toISOString();
+  const allDone=state.rounds.length>=ROUNDS.length&&state.rounds.slice(0,ROUNDS.length).every(r=>r&&r.done);
+  if(allDone)state.done=true;
+  await persist();
+  const msg=document.getElementById("saveMsg");msg.classList.add("show");
+  document.getElementById("stamp").classList.add("show");
+  document.getElementById("stampText").textContent=`${me.name} · 제10장 ${state.round+1}회차 완료`;
+  renderRoundBar();
+  setTimeout(()=>msg.classList.remove("show"),2500);
+});
+
+loadState();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js").catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>

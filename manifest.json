@@ -2,7 +2,7 @@
   "name": "격몽요결 擊蒙要訣",
   "short_name": "격몽요결",
   "description": "율곡 이이 격몽요결 자기주도 고전 수업 앱",
-  "start_url": "./격몽요결_허브.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FAF6EC",

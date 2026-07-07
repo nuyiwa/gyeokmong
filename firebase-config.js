@@ -30,7 +30,11 @@ function _isConfigured() {
   return firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("여기에");
 }
 
+let _initDone = false;
+
 async function gmykInit() {
+  if (_initDone) return;
+  _initDone = true;
   if (!_isConfigured()) {
     console.warn("[격몽요결] Firebase 미설정 → 기기 저장(localStorage) 모드로 작동합니다.");
     _useFirebase = false;
@@ -43,7 +47,7 @@ async function gmykInit() {
       _useFirebase = false;
       return;
     }
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     _db = firebase.firestore();
     _useFirebase = true;
     console.log("[격몽요결] Firebase 연결됨 ✓");

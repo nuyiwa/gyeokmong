@@ -197,6 +197,7 @@ async function enter(){
   const n=loginName.value.trim();
   if(!n){ loginName.focus(); return; }
   me.name=n; me.team=roster[n]||"팀 미지정";
+  localStorage.setItem("gmyk_saved_name",n);
   await gmykInit();
   await loadRoster();
   document.getElementById("loginScreen").style.display="none";
@@ -204,7 +205,10 @@ async function enter(){
   document.getElementById("meInfo").innerHTML=`${me.name} · <b>${me.team}</b>`;
   renderHub();
 }
-document.getElementById("logoutBtn").addEventListener("click",()=>location.reload());
+document.getElementById("logoutBtn").addEventListener("click",()=>{
+  localStorage.removeItem("gmyk_saved_name");
+  location.reload();
+});
 // 관리자
 document.getElementById("adminLink").addEventListener("click",()=>{
   document.getElementById("loginMain").style.display="none";
@@ -299,7 +303,12 @@ function renderTimeline(progress){
       </div>
     </div>`).join("");
 }
-(async()=>{ await gmykInit(); await loadRoster(); })();
+(async()=>{
+  await gmykInit();
+  await loadRoster();
+  const saved=localStorage.getItem("gmyk_saved_name");
+  if(saved){ loginName.value=saved; await enter(); }
+})();
 </script>
 <script>
 if ("serviceWorker" in navigator) {

@@ -1,5 +1,5 @@
 /* 격몽요결 수업 앱 · 서비스 워커 (오프라인 지원) */
-const CACHE = "gmyk-v1";
+const CACHE = "gmyk-v2";
 const ASSETS = [
   "./index.html",
   "./ch01.html","./ch02.html","./ch03.html",
@@ -12,7 +12,7 @@ const ASSETS = [
 
 self.addEventListener("install", e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS).catch(()=>{})).then(()=>self.skipWaiting())
+    caches.open(CACHE).then(c => c.addAll(ASSETS).catch(()=>{}))
   );
 });
 
@@ -24,15 +24,25 @@ self.addEventListener("activate", e => {
   );
 });
 
+// 새 버전 배포 시 사용자가 "새로고침"을 누르면 대기 중인 워커를 즉시 활성화
+self.addEventListener("message", e => {
+  if (e.data && e.data.type === "SKIP_WAITING") self.skipWaiting();
+});
+
 self.addEventListener("fetch", e => {
+  if (e.request.method !== "GET") return;
   // Firebase 등 외부 요청은 그대로 통과 (네트워크 우선)
   if (e.request.url.includes("firestore") ||
       e.request.url.includes("googleapis") ||
       e.request.url.includes("gstatic")) {
     return;
   }
-  // 앱 파일은 캐시 우선, 없으면 네트워크
+  // 앱 파일은 네트워크 우선(항상 최신 반영), 오프라인일 때만 캐시로 대체
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+    fetch(e.request).then(res => {
+      const copy = res.clone();
+      caches.open(CACHE).then(c => c.put(e.request, copy)).catch(()=>{});
+      return res;
+    }).catch(() => caches.match(e.request))
   );
 });

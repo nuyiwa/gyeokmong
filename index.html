@@ -87,6 +87,8 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--hanji);color:var(--i
 .tl-card .tl-score.exam{background:var(--dancheong)}
 footer{margin-top:50px;border-top:1px solid var(--line);padding-top:16px;font-size:12.5px;color:var(--muted);text-align:center}
 @media(max-width:560px){.chapter-grid{grid-template-columns:1fr 1fr}}
+.update-banner{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--jjok);color:#fff;padding:12px 22px;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;z-index:100;box-shadow:0 6px 20px rgba(38,36,31,.25);display:none;align-items:center;gap:8px}
+.update-banner.show{display:flex}
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1F4E5F">
@@ -158,6 +160,7 @@ footer{margin-top:50px;border-top:1px solid var(--line);padding-top:16px;font-si
 </div>
 <footer>擊蒙要訣 · 栗谷 李珥 · 1577 · 자기주도 고전 수업 · <a href="teacher.html" style="color:var(--dancheong);font-weight:700">교사 대시보드</a></footer>
 </div>
+<div class="update-banner" id="updateBanner">🔄 새 버전이 있어요 · 눌러서 새로고침</div>
 <script>
 // 각 장: 파일, 한자, 이름, 설명, 회차수
 const CHAPTERS=[
@@ -313,8 +316,33 @@ function renderTimeline(progress){
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("service-worker.js").catch(()=>{});
+    navigator.serviceWorker.register("service-worker.js").then(reg=>{
+      // 이미 업데이트가 대기 중인 경우 (예: 다른 탭에서 새로고침 전)
+      if(reg.waiting) showUpdateBanner(reg.waiting);
+      reg.addEventListener("updatefound", ()=>{
+        const nw=reg.installing;
+        if(!nw) return;
+        nw.addEventListener("statechange", ()=>{
+          if(nw.state==="installed" && navigator.serviceWorker.controller){
+            showUpdateBanner(nw);
+          }
+        });
+      });
+      // 홈화면 앱을 다시 열 때마다 업데이트 여부 확인
+      reg.update().catch(()=>{});
+    }).catch(()=>{});
+    let reloading=false;
+    navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+      if(reloading) return;
+      reloading=true;
+      location.reload();
+    });
   });
+}
+function showUpdateBanner(worker){
+  const banner=document.getElementById("updateBanner");
+  banner.classList.add("show");
+  banner.onclick=()=>{ worker.postMessage({type:"SKIP_WAITING"}); banner.classList.remove("show"); };
 }
 </script>
 </body>

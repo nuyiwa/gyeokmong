@@ -237,10 +237,10 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding-top:14px;font-si
   <div class="mode" id="modeSim">
     <div class="act">
       <div class="act-head"><h3>① 팀 질문 선택</h3><span class="badge team">팀 (4명)</span></div>
-      <p class="act-desc">개별질문 중 토론할 질문 하나를 고르세요.</p>
+      <p class="act-desc">팀원들이 각자 적어둔 개별질문이 모두 모입니다. 토론할 질문 하나를 함께 골라보세요.</p>
       <div class="pick-list" id="pickList"></div>
-      <label class="f">다른 팀원의 질문이 선택됐다면</label>
-      <input class="t" id="pickedOther" placeholder="팀이 선택한 질문을 적어주세요">
+      <label class="f">위 목록에 없는 질문이라면 직접 적기</label>
+      <input class="t" id="pickedOther" placeholder="팀이 의논해서 정한 질문을 적어주세요">
     </div>
     <div class="act">
       <div class="act-head"><h3>② 팀 토론</h3><span class="badge team">팀 (4명)</span></div>
@@ -311,16 +311,41 @@ function rk(){
 function ek(n){ return "exam"+n; }
 function storageKey(){ return SK+me.name.replace(/\s+/g,"_"); }
 
+let roster={};
 async function loadState(){
   const p=new URLSearchParams(location.search);
   me.name=p.get("name")||""; me.team=p.get("team")||"";
   document.getElementById("meInfo").innerHTML=me.name?`${me.name} · <b>${me.team}</b>`:"이름 없음";
   await gmykInit();
+  try{ roster=await gmykLoadRoster()||{}; }catch(e){ roster={}; }
   try{
     const d=await gmykLoad(storageKey());
     if(d) state=d;
   }catch(e){ console.warn(e); }
   renderAll();
+}
+function teammates(){
+  const names=Object.keys(roster).filter(n=>roster[n]===me.team);
+  if(me.name && !names.includes(me.name)) names.push(me.name);
+  return names;
+}
+async function loadTeamQuestions(round){
+  const names=teammates();
+  const results=await Promise.all(names.map(async n=>{
+    try{
+      const d=await gmykLoad(SK+n.replace(/\s+/g,"_"));
+      const qs=(d&&d.rounds&&d.rounds[round]&&d.rounds[round].questions)||[];
+      return qs.filter(q=>q&&q.text).map(q=>({author:n,text:q.text}));
+    }catch(e){ return []; }
+  }));
+  return results.flat();
+}
+function teamPickKey(round){ return `gmyk_teampick_ch${CH_NUM}_${(me.team||"미지정").replace(/\s+/g,"_")}_${round}`; }
+async function loadTeamPick(round){
+  try{ return await gmykLoad(teamPickKey(round)); }catch(e){ return null; }
+}
+async function saveTeamPick(round,pick){
+  try{ await gmykSave(teamPickKey(round),{...pick,updatedAt:new Date().toISOString(),updatedBy:me.name}); }catch(e){}
 }
 async function persist(){
   try{
@@ -618,27 +643,39 @@ function addQ(){
   rk().questions.push({text:t,answer:""});inp.value="";renderQuestions();renderSim();persist();
 }
 
-function renderSim(){
+async function renderSim(){
   const R=ROUNDS[state.round],s=rk();
-  const pick=document.getElementById("pickList");pick.innerHTML="";
-  if(!s.questions.length){
-    pick.innerHTML=`<div class="empty-note">탐구일에 적은 개별질문이 여기에 나타납니다.</div>`;
+  const round=state.round;
+  const pick=document.getElementById("pickList");
+  pick.innerHTML=`<div class="empty-note">팀원들의 질문을 불러오는 중...</div>`;
+  const [teamQs,teamPick]=await Promise.all([loadTeamQuestions(round),loadTeamPick(round)]);
+  if(round!==state.round) return;
+  pick.innerHTML="";
+  if(!teamQs.length){
+    pick.innerHTML=`<div class="empty-note">탐구일에 팀원들이 적은 개별질문이 여기에 모입니다.</div>`;
   } else {
-    s.questions.forEach((q,i)=>{
+    teamQs.forEach(q=>{
+      const picked=!!(teamPick && !teamPick.custom && teamPick.text===q.text && teamPick.author===q.author);
       const item=document.createElement("label");
-      item.className="pick-item"+(s.pickedIdx===i?" picked":"");
-      item.innerHTML=`<input type="radio" name="pick" ${s.pickedIdx===i?"checked":""}><span>${q.text}</span>`;
-      item.addEventListener("click",()=>{s.pickedIdx=i;s.pickedOther="";document.getElementById("pickedOther").value="";renderSim();persist();});
+      item.className="pick-item"+(picked?" picked":"");
+      item.innerHTML=`<input type="radio" name="pick" ${picked?"checked":""}><span><b>${q.author}</b> · ${q.text}</span>`;
+      item.addEventListener("click",async()=>{
+        await saveTeamPick(round,{text:q.text,author:q.author,custom:false});
+        renderSim();
+      });
       pick.appendChild(item);
     });
   }
-  document.getElementById("pickedOther").value=s.pickedOther||"";
+  document.getElementById("pickedOther").value=(teamPick&&teamPick.custom)?teamPick.text:"";
   document.getElementById("dbCommon").textContent=R.common;
-  const tq=s.pickedOther||(s.pickedIdx>=0&&s.questions[s.pickedIdx]?s.questions[s.pickedIdx].text:"");
-  document.getElementById("dbTeam").textContent=tq||"아직 선택 전";
+  document.getElementById("dbTeam").textContent=(teamPick&&teamPick.text)?teamPick.text:"아직 선택 전";
   document.getElementById("teamTalk").value=s.teamTalk||"";
 }
-document.getElementById("pickedOther").addEventListener("change",e=>{rk().pickedOther=e.target.value;if(e.target.value)rk().pickedIdx=-1;renderSim();persist();});
+document.getElementById("pickedOther").addEventListener("change",async e=>{
+  const v=e.target.value.trim();
+  if(v){ await saveTeamPick(state.round,{text:v,author:me.name,custom:true}); }
+  renderSim();
+});
 document.getElementById("teamTalk").addEventListener("change",e=>{rk().teamTalk=e.target.value;persist();});
 
 document.getElementById("saveBtn").addEventListener("click",async()=>{
